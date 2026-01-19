@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anand Electronic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      transition: transform 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+ <!-- Navigation -->
+<nav class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+  <div class="container mx-auto px-4 py-3">
+    <!-- Mobile menu button and logo -->
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-store text-2xl"></i>
+        <h1 class="text-xl font-bold">Anand Electronic</h1>
+      </div>
+      
+      <!-- Mobile menu button -->
+      <button id="mobileMenuButton" class="md:hidden p-2">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+    
+    <!-- Desktop Navigation -->
+    <div class="hidden md:flex flex-col md:flex-row justify-between items-center mt-4 md:mt-0">
+      <div class="flex flex-wrap justify-center gap-4 w-full md:w-auto">
+        <a href="index.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-box"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="add-product.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-plus-circle"></i>
+          <span>Add Product</span>
+        </a>
+        <a href="sell-product.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Sell</span>
+        </a>
+        <a href="revenue.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-chart-line"></i>
+          <span>Revenue</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Mobile Navigation (hidden by default) -->
+    <div id="mobileMenu" class="hidden md:hidden mt-4 pt-4 border-t border-white/20">
+      <div class="flex flex-col space-y-3">
+        <a href="index.html" 
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-box w-6"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="add-product.html" 
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-plus-circle w-6"></i>
+          <span>Add Product</span>
+        </a>
+        <a href="sell-product.html" 
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-shopping-cart w-6"></i>
+          <span>Sell</span>
+        </a>
+        <a href="revenue.html" 
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-chart-line w-6"></i>
+          <span>Revenue</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Mobile menu toggle functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        // Change icon based on menu state
+        const icon = mobileMenuButton.querySelector('i');
+        if (mobileMenu.classList.contains('hidden')) {
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        } else {
+          icon.classList.remove('fa-bars');
+          icon.classList.add('fa-times');
+        }
+      });
+      
+      // Close mobile menu when clicking on a link
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          const icon = mobileMenuButton.querySelector('i');
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        });
+      });
+    }
+  });
+</script>
+
+    <!-- Stats Dashboard -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+      <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-gray-500 text-sm">Total Products</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="totalProducts">0</h3>
+          </div>
+          <div class="bg-blue-100 p-3 rounded-full">
+            <i class="fas fa-box text-blue-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-gray-500 text-sm">Low Stock Items </p>
+            <h3 class="text-2xl font-bold text-gray-800" id="lowStock">0</h3>
+          </div>
+          <div class="bg-green-100 p-3 rounded-full">
+            <i class="fas fa-exclamation-triangle text-green-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-gray-500 text-sm">Today's Revenue</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="todayRevenue">₹0</h3>
+          </div>
+          <div class="bg-purple-100 p-3 rounded-full">
+            <i class="fas fa-rupee-sign text-purple-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-gray-500 text-sm">Total Sales</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="totalSales">0</h3>
+          </div>
+          <div class="bg-orange-100 p-3 rounded-full">
+            <i class="fas fa-shopping-cart text-orange-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product List -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="px-6 py-4 border-b">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-bold text-gray-800">All Products</h2>
+          <div class="flex items-center space-x-4">
+          
+            <a href="add-product.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-300">
+              <i class="fas fa-plus"></i>
+              <span>Add New Product</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div id="products" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Products will be loaded here -->
+        <div class="text-center py-10">
+          <i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-4"></i>
+          <p class="text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Product Modal -->
+  <div id="editModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-xl bg-white">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium text-gray-900">Edit Product</h3>
+        <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <form id="editForm" class="space-y-4">
+        <input type="hidden" id="editProductId">
+        
+        <div>
+          <label for="editProductName" class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-tag mr-2"></i>Product Name
+          </label>
+          <input id="editProductName" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        
+        <div>
+          <label for="editProductPrice" class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-rupee-sign mr-2"></i>Price (₹)
+          </label>
+          <input id="editProductPrice" type="number" min="0" step="0.01" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        
+        <div>
+          <label for="editProductStock" class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-boxes mr-2"></i>Stock Quantity
+          </label>
+          <div class="relative">
+            <input id="editProductStock" type="number" min="0" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">
+              units
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">Stock is low when ≤5 units remain</p>
+        </div>
+        
+        <div>
+          <label for="editProductDescription" class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-align-left mr-2"></i>Description
+          </label>
+          <textarea id="editProductDescription" rows="3"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+        </div>
+        
+        <div class="pt-4 border-t">
+          <div class="flex space-x-3">
+            <button type="button" onclick="closeEditModal()" 
+                    class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition duration-300">
+              Cancel
+            </button>
+            <button type="submit" id="updateProductBtn"
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-300">
+              <i class="fas fa-save mr-2"></i>Update Product
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-xl bg-white">
+      <div class="text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+          <i class="fas fa-check text-green-600 text-xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Success!</h3>
+        <p class="text-gray-500 mb-4" id="successMessage">Product updated successfully</p>
+        <button onclick="closeSuccessModal()" 
+                class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition duration-300">
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+<footer class="bg-gray-800 text-white py-6 mt-8 md:mt-12">
+  <div class="container mx-auto px-4 text-center">
+    <p class="mb-2 text-sm md:text-base">© 2023 Anand Electronic. All rights reserved.</p>
+    <p class="text-gray-400 text-xs md:text-sm">Made with <i class="fas fa-heart text-red-500"></i> for efficient shop management</p>
+  </div>
+</footer>
+
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const productsDiv = document.getElementById('products');
+    const totalProductsEl = document.getElementById('totalProducts');
+    const lowStockEl = document.getElementById('lowStock');
+    const todayRevenueEl = document.getElementById('todayRevenue');
+    const totalSalesEl = document.getElementById('totalSales');
+    const editForm = document.getElementById('editForm');
+    const updateProductBtn = document.getElementById('updateProductBtn');
+
+    // Format currency
+    const formatCurrency = (amount) => {
+      return '₹' + amount.toLocaleString('en-IN');
+    };
+
+    // Get today's date in YYYY-MM-DD format
+    const getTodayDate = () => {
+      return new Date().toISOString().split('T')[0];
+    };
+
+    // Load products
+    const loadProducts = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "products"));
+        let totalProducts = 0;
+        let lowStockCount = 0;
+        
+        productsDiv.innerHTML = '';
+        
+        if (snapshot.empty) {
+          productsDiv.innerHTML = `
+            <div class="col-span-full text-center py-16">
+              <i class="fas fa-box-open text-5xl text-gray-300 mb-4"></i>
+              <h3 class="text-xl font-semibold text-gray-700 mb-2">No Products Found</h3>
+              <p class="text-gray-500 mb-6">Add your first product to get started</p>
+              <a href="add-product.html" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg inline-flex items-center space-x-2 transition duration-300">
+                <i class="fas fa-plus"></i>
+                <span>Add Product</span>
+              </a>
+            </div>
+          `;
+          return;
+        }
+        
+        // Sort products: low stock first, then out of stock, then by name
+        const sortedProducts = [];
+        snapshot.forEach(doc => {
+          sortedProducts.push({ id: doc.id, ...doc.data() });
+        });
+        
+        sortedProducts.sort((a, b) => {
+          // First sort by stock status: low stock (≤5) first, then out of stock, then others
+          const aIsLowStock = a.stock > 0 && a.stock <= 5;
+          const bIsLowStock = b.stock > 0 && b.stock <= 5;
+          const aIsOutOfStock = a.stock === 0;
+          const bIsOutOfStock = b.stock === 0;
+          
+          if (aIsLowStock && !bIsLowStock) return -1;
+          if (!aIsLowStock && bIsLowStock) return 1;
+          if (aIsOutOfStock && !bIsOutOfStock) return -1;
+          if (!aIsOutOfStock && bIsOutOfStock) return 1;
+          
+          // Then sort by stock quantity (ascending)
+          return a.stock - b.stock;
+        });
+        
+        sortedProducts.forEach(product => {
+          totalProducts++;
+          const p = product;
+          const isLowStock = p.stock > 0 && p.stock <= 5; // Changed to ≤5
+          const isOutOfStock = p.stock === 0;
+          
+          if (isLowStock) lowStockCount++;
+          
+          // Determine colors based on stock level
+          let stockColor, stockIcon, stockBadge, stockBadgeColor;
+          
+          if (isOutOfStock) {
+            stockColor = 'text-red-600';
+            stockIcon = 'fa-times-circle';
+            stockBadge = 'Out of Stock';
+            stockBadgeColor = 'bg-red-100 text-red-800';
+          } else if (isLowStock) {
+            stockColor = 'text-yellow-600';
+            stockIcon = 'fa-exclamation-triangle';
+            stockBadge = 'Low Stock';
+            stockBadgeColor = 'bg-yellow-100 text-yellow-800';
+          } else {
+            stockColor = 'text-green-600';
+            stockIcon = 'fa-check-circle';
+            stockBadge = 'In Stock';
+            stockBadgeColor = 'bg-green-100 text-green-800';
+          }
+          
+          productsDiv.innerHTML += `
+            <div class="card-hover bg-white border ${isLowStock ? 'border-yellow-200' : isOutOfStock ? 'border-red-200' : 'border-gray-200'} rounded-xl p-6 shadow-sm hover:shadow-md transition duration-300">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h4 class="text-lg font-bold text-gray-800">${p.name}</h4>
+                  <p class="text-sm text-gray-500 mt-1">Product ID: ${product.id.substring(0, 8)}...</p>
+                </div>
+                <div class="${stockBadgeColor} text-xs font-semibold px-3 py-1 rounded-full">
+                  ${stockBadge}
+                </div>
+              </div>
+              
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600">Price:</span>
+                  <span class="text-xl font-bold text-blue-700">${formatCurrency(p.price)}</span>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600">Stock Available:</span>
+                  <div class="flex items-center space-x-2">
+                    <i class="fas ${stockIcon} ${stockColor}"></i>
+                    <span class="font-semibold ${stockColor}">${p.stock} units</span>
+                  </div>
+                </div>
+                
+                ${p.description ? `
+                <div class="pt-2 border-t">
+                  <p class="text-sm text-gray-600"><span class="font-medium">Description:</span> ${p.description}</p>
+                </div>
+                ` : ''}
+                
+                <div class="pt-2 border-t">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Total Value:</span>
+                    <span class="font-bold text-gray-800">${formatCurrency(p.price * p.stock)}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mt-6 flex space-x-3">
+                <a href="sell-product.html" class="flex-1 bg-green-600 hover:bg-green-700 text-white text-center py-2 rounded-lg transition duration-300 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}" ${isOutOfStock ? 'onclick="return false;"' : ''}>
+                  Sell
+                </a>
+                <button onclick="openEditModal('${product.id}', ${JSON.stringify(p).replace(/"/g, '&quot;').replace(/'/g, "\\'")})" 
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 rounded-lg transition duration-300">
+                  <i class="fas fa-edit mr-1"></i>Edit
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        
+        totalProductsEl.textContent = totalProducts;
+        lowStockEl.textContent = lowStockCount;
+        
+      } catch (error) {
+        console.error("Error loading products:", error);
+        productsDiv.innerHTML = `
+          <div class="col-span-full text-center py-16">
+            <i class="fas fa-exclamation-circle text-5xl text-red-300 mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">Error Loading Products</h3>
+            <p class="text-gray-500">Please check your connection and try again</p>
+          </div>
+        `;
+      }
+    };
+
+    // Load revenue stats
+    const loadRevenueStats = async () => {
+      try {
+        const today = getTodayDate();
+        const salesSnapshot = await getDocs(collection(db, "sales"));
+        
+        let todayRevenue = 0;
+        let totalSalesCount = 0;
+        
+        salesSnapshot.forEach(doc => {
+          const sale = doc.data();
+          totalSalesCount++;
+          if (sale.date === today) {
+            todayRevenue += sale.total;
+          }
+        });
+        
+        todayRevenueEl.textContent = formatCurrency(todayRevenue);
+        totalSalesEl.textContent = totalSalesCount;
+      } catch (error) {
+        console.error("Error loading revenue stats:", error);
+      }
+    };
+
+    // Initialize the dashboard
+    const initDashboard = async () => {
+      await loadProducts();
+      await loadRevenueStats();
+    };
+
+    // Edit product modal functions
+    window.openEditModal = (productId, productData) => {
+      document.getElementById('editProductId').value = productId;
+      document.getElementById('editProductName').value = productData.name;
+      document.getElementById('editProductPrice').value = productData.price;
+      document.getElementById('editProductStock').value = productData.stock;
+      document.getElementById('editProductDescription').value = productData.description || '';
+      
+      document.getElementById('editModal').classList.remove('hidden');
+    };
+
+    window.closeEditModal = () => {
+      document.getElementById('editModal').classList.add('hidden');
+      editForm.reset();
+    };
+
+    window.closeSuccessModal = () => {
+      document.getElementById('successModal').classList.add('hidden');
+    };
+
+    // Handle edit form submission
+    editForm.onsubmit = async (e) => {
+      e.preventDefault();
+      
+      const productId = document.getElementById('editProductId').value;
+      const name = document.getElementById('editProductName').value;
+      const price = parseFloat(document.getElementById('editProductPrice').value);
+      const stock = parseInt(document.getElementById('editProductStock').value);
+      const description = document.getElementById('editProductDescription').value;
+      
+      // Show loading state
+      const originalText = updateProductBtn.innerHTML;
+      updateProductBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+      updateProductBtn.disabled = true;
+      
+      try {
+        await updateDoc(doc(db, "products", productId), {
+          name: name,
+          price: price,
+          stock: stock,
+          description: description || '',
+          updatedAt: new Date().toISOString()
+        });
+        
+        // Show success message
+        document.getElementById('successMessage').textContent = `${name} has been updated successfully`;
+        document.getElementById('successModal').classList.remove('hidden');
+        
+        // Close edit modal
+        closeEditModal();
+        
+        // Reload products
+        await loadProducts();
+        await loadRevenueStats();
+        
+      } catch (error) {
+        alert(`Error updating product: ${error.message}`);
+      } finally {
+        // Reset button state
+        updateProductBtn.innerHTML = originalText;
+        updateProductBtn.disabled = false;
+      }
+    };
+
+    // Close modals on outside click
+    window.onclick = function(event) {
+      const editModal = document.getElementById('editModal');
+      const successModal = document.getElementById('successModal');
+      
+      if (event.target === editModal) {
+        closeEditModal();
+      }
+      if (event.target === successModal) {
+        closeSuccessModal();
+      }
+    };
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', initDashboard);
+  </script>
+</body>
+</html>

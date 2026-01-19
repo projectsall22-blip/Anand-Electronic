@@ -1,0 +1,650 @@
+<!-- revenue.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revenue - Anand Electronic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+<!-- Navigation -->
+<nav class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+  <div class="container mx-auto px-4 py-3">
+    <!-- Mobile menu button and logo -->
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-store text-2xl"></i>
+        <h1 class="text-xl font-bold">Anand Electronic</h1>
+      </div>
+      
+      <!-- Mobile menu button -->
+      <button id="mobileMenuButton" class="md:hidden p-2">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+    
+    <!-- Desktop Navigation -->
+    <div class="hidden md:flex flex-col md:flex-row justify-between items-center mt-4 md:mt-0">
+      <div class="flex flex-wrap justify-center gap-4 w-full md:w-auto">
+        <a href="index.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-box"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="add-product.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-plus-circle"></i>
+          <span>Add Product</span>
+        </a>
+        <a href="sell-product.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Sell</span>
+        </a>
+        <a href="revenue.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-chart-line"></i>
+          <span>Revenue</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Mobile Navigation (hidden by default) -->
+    <div id="mobileMenu" class="hidden md:hidden mt-4 pt-4 border-t border-white/20">
+      <div class="flex flex-col space-y-3">
+        <a href="index.html" 
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-box w-6"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="add-product.html" 
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-plus-circle w-6"></i>
+          <span>Add Product</span>
+        </a>
+        <a href="sell-product.html" 
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-shopping-cart w-6"></i>
+          <span>Sell</span>
+        </a>
+        <a href="revenue.html" 
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-chart-line w-6"></i>
+          <span>Revenue</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Mobile menu toggle functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        // Change icon based on menu state
+        const icon = mobileMenuButton.querySelector('i');
+        if (mobileMenu.classList.contains('hidden')) {
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        } else {
+          icon.classList.remove('fa-bars');
+          icon.classList.add('fa-times');
+        }
+      });
+      
+      // Close mobile menu when clicking on a link
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          const icon = mobileMenuButton.querySelector('i');
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        });
+      });
+    }
+  });
+</script>
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <a href="index.html" class="text-blue-600 hover:text-blue-800 flex items-center space-x-2">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Dashboard</span>
+      </a>
+    </div>
+
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4 shadow-lg">
+        <i class="fas fa-chart-line text-white text-3xl"></i>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">Revenue Analytics</h2>
+      <p class="text-gray-600">Track your sales performance and revenue trends</p>
+    </div>
+
+    <!-- Revenue Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl shadow-lg p-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-blue-100">Today's Revenue</p>
+            <h3 class="text-2xl font-bold mt-1" id="todayRevenue">₹0</h3>
+          </div>
+          <i class="fas fa-sun text-2xl opacity-80"></i>
+        </div>
+      </div>
+      
+      <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl shadow-lg p-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-purple-100">Yesterday's Revenue</p>
+            <h3 class="text-2xl font-bold mt-1" id="yesterdayRevenue">₹0</h3>
+          </div>
+          <i class="fas fa-calendar-day text-2xl opacity-80"></i>
+        </div>
+      </div>
+      
+      <div class="bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl shadow-lg p-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-green-100">This Month</p>
+            <h3 class="text-2xl font-bold mt-1" id="monthRevenue">₹0</h3>
+          </div>
+          <i class="fas fa-calendar-alt text-2xl opacity-80"></i>
+        </div>
+      </div>
+      
+      <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl shadow-lg p-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-orange-100">Total Sales Count</p>
+            <h3 class="text-2xl font-bold mt-1" id="totalSalesCount">0</h3>
+          </div>
+          <i class="fas fa-shopping-cart text-2xl opacity-80"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <!-- Revenue Chart -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
+          <i class="fas fa-chart-bar mr-2"></i>Daily Revenue Trend
+        </h3>
+        <div class="h-80">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Top Products Chart -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
+          <i class="fas fa-star mr-2"></i>Top Selling Products
+        </h3>
+        <div class="h-80">
+          <canvas id="topProductsChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue Table -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b">
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-bold text-gray-800 flex items-center">
+            <i class="fas fa-table mr-2"></i>Daily Revenue Report
+          </h3>
+          <div class="flex items-center space-x-2">
+            <button onclick="exportToCSV()" 
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-300">
+              <i class="fas fa-file-export"></i>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Sales</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Revenue</th>
+              <th class="px6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Transaction</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="report" class="divide-y divide-gray-200">
+            <!-- Revenue data will be loaded here -->
+            <tr>
+              <td colspan="5" class="px-6 py-8 text-center">
+                <i class="fas fa-spinner fa-spin text-2xl text-blue-600 mb-4"></i>
+                <p class="text-gray-600">Loading revenue data...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Insights -->
+    <div class="bg-gradient-to-r from-indigo-500 to-blue-600 rounded-xl shadow-lg p-8 text-white">
+      <h3 class="text-xl font-bold mb-6 flex items-center">
+        <i class="fas fa-lightbulb mr-2"></i>Revenue Insights
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-trophy mr-2"></i>
+            <h4 class="font-bold">Best Day</h4>
+          </div>
+          <p id="bestDay" class="text-white/90">-</p>
+        </div>
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-chart-pie mr-2"></i>
+            <h4 class="font-bold">Average Daily</h4>
+          </div>
+          <p id="averageDaily" class="text-white/90">-</p>
+        </div>
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-bullseye mr-2"></i>
+            <h4 class="font-bold">This Month Target</h4>
+          </div>
+          <p id="monthTarget" class="text-white/90">-</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<footer class="bg-gray-800 text-white py-6 mt-8 md:mt-12">
+  <div class="container mx-auto px-4 text-center">
+    <p class="mb-2 text-sm md:text-base">© 2023 Anand Electronic. All rights reserved.</p>
+    <p class="text-gray-400 text-xs md:text-sm">Made with <i class="fas fa-heart text-red-500"></i> for efficient shop management</p>
+  </div>
+</footer>
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    let revenueData = {};
+    let productSales = {};
+    const reportDiv = document.getElementById('report');
+    let revenueChart, topProductsChart;
+
+    // Format currency
+    const formatCurrency = (amount) => {
+      return '₹' + amount.toLocaleString('en-IN');
+    };
+
+    // Get yesterday's date
+    const getYesterdayDate = () => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      return yesterday.toISOString().split('T')[0];
+    };
+
+    // Get current month in YYYY-MM format
+    const getCurrentMonth = () => {
+      const now = new Date();
+      return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    };
+
+    // Load revenue data
+    const loadRevenueData = async () => {
+      try {
+        const snap = await getDocs(collection(db, "sales"));
+        revenueData = {};
+        productSales = {};
+        let totalSalesCount = 0;
+        let todayRevenue = 0;
+        let yesterdayRevenue = 0;
+        let monthRevenue = 0;
+        const currentMonth = getCurrentMonth();
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = getYesterdayDate();
+
+        snap.forEach(d => {
+          const s = d.data();
+          totalSalesCount++;
+          
+          // Aggregate by date
+          const date = s.date;
+          if (!revenueData[date]) {
+            revenueData[date] = {
+              total: 0,
+              count: 0,
+              transactions: []
+            };
+          }
+          revenueData[date].total += s.total;
+          revenueData[date].count++;
+          revenueData[date].transactions.push(s);
+
+          // Aggregate by product
+          const product = s.product;
+          if (!productSales[product]) {
+            productSales[product] = {
+              total: 0,
+              count: 0
+            };
+          }
+          productSales[product].total += s.total;
+          productSales[product].count += s.qty;
+
+          // Calculate today's revenue
+          if (date === today) {
+            todayRevenue += s.total;
+          }
+
+          // Calculate yesterday's revenue
+          if (date === yesterday) {
+            yesterdayRevenue += s.total;
+          }
+
+          // Calculate this month's revenue
+          if (date.startsWith(currentMonth)) {
+            monthRevenue += s.total;
+          }
+        });
+
+        // Update stats
+        document.getElementById('todayRevenue').textContent = formatCurrency(todayRevenue);
+        document.getElementById('yesterdayRevenue').textContent = formatCurrency(yesterdayRevenue);
+        document.getElementById('monthRevenue').textContent = formatCurrency(monthRevenue);
+        document.getElementById('totalSalesCount').textContent = totalSalesCount;
+
+        // Update table
+        updateRevenueTable();
+
+        // Create charts
+        createCharts();
+
+        // Update insights
+        updateInsights();
+
+      } catch (error) {
+        console.error("Error loading revenue data:", error);
+        reportDiv.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center">
+              <i class="fas fa-exclamation-circle text-2xl text-red-600 mb-4"></i>
+              <p class="text-gray-600">Error loading revenue data</p>
+            </td>
+          </tr>
+        `;
+      }
+    };
+
+    // Update revenue table
+    const updateRevenueTable = () => {
+      reportDiv.innerHTML = '';
+      
+      if (Object.keys(revenueData).length === 0) {
+        reportDiv.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center">
+              <i class="fas fa-chart-line text-3xl text-gray-300 mb-4"></i>
+              <h4 class="text-lg font-semibold text-gray-700 mb-2">No Sales Data Yet</h3>
+              <p class="text-gray-500">Start selling products to see revenue reports</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Sort dates in descending order
+      const sortedDates = Object.keys(revenueData).sort().reverse();
+
+      sortedDates.forEach(date => {
+        const data = revenueData[date];
+        const avgTransaction = data.count > 0 ? data.total / data.count : 0;
+        
+        reportDiv.innerHTML += `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-calendar-day text-blue-600"></i>
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">${formatDate(date)}</div>
+                  <div class="text-sm text-gray-500">${date}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                ${data.count} sales
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-lg font-bold text-gray-900">
+              ${formatCurrency(data.total)}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">${formatCurrency(avgTransaction)}</div>
+              <div class="text-sm text-gray-500">per transaction</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <button onclick="viewDayDetails('${date}')" 
+                      class="text-blue-600 hover:text-blue-900 mr-4">
+                <i class="fas fa-eye mr-1"></i>View
+              </button>
+              <button onclick="exportDayCSV('${date}')" 
+                      class="text-green-600 hover:text-green-900">
+                <i class="fas fa-download mr-1"></i>Export
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    };
+
+    // Format date for display
+    const formatDate = (dateString) => {
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
+    };
+
+    // Create charts
+    const createCharts = () => {
+      // Prepare data for revenue chart
+      const sortedDates = Object.keys(revenueData).sort();
+      const last7Dates = sortedDates.slice(-7);
+      const revenueValues = last7Dates.map(date => revenueData[date].total);
+      const salesCounts = last7Dates.map(date => revenueData[date].count);
+
+      // Revenue Chart
+      const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+      if (revenueChart) revenueChart.destroy();
+      
+      revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+          labels: last7Dates,
+          datasets: [{
+            label: 'Revenue (₹)',
+            data: revenueValues,
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '₹' + value;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Top Products Chart
+      const products = Object.keys(productSales);
+      const sortedProducts = products.sort((a, b) => productSales[b].total - productSales[a].total);
+      const top5Products = sortedProducts.slice(0, 5);
+      const top5Revenue = top5Products.map(product => productSales[product].total);
+
+      const productsCtx = document.getElementById('topProductsChart').getContext('2d');
+      if (topProductsChart) topProductsChart.destroy();
+      
+      topProductsChart = new Chart(productsCtx, {
+        type: 'bar',
+        data: {
+          labels: top5Products,
+          datasets: [{
+            label: 'Revenue (₹)',
+            data: top5Revenue,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.7)',
+              'rgba(54, 162, 235, 0.7)',
+              'rgba(255, 206, 86, 0.7)',
+              'rgba(75, 192, 192, 0.7)',
+              'rgba(153, 102, 255, 0.7)'
+            ],
+            borderColor: [
+              'rgb(255, 99, 132)',
+              'rgb(54, 162, 235)',
+              'rgb(255, 206, 86)',
+              'rgb(75, 192, 192)',
+              'rgb(153, 102, 255)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return '₹' + value;
+                }
+              }
+            }
+          }
+        }
+      });
+    };
+
+    // Update insights
+    const updateInsights = () => {
+      if (Object.keys(revenueData).length === 0) return;
+
+      // Find best day
+      let bestDay = '';
+      let bestDayRevenue = 0;
+      Object.keys(revenueData).forEach(date => {
+        if (revenueData[date].total > bestDayRevenue) {
+          bestDayRevenue = revenueData[date].total;
+          bestDay = date;
+        }
+      });
+
+      // Calculate average daily revenue
+      const totalRevenue = Object.values(revenueData).reduce((sum, day) => sum + day.total, 0);
+      const avgDailyRevenue = totalRevenue / Object.keys(revenueData).length;
+
+      // Calculate month target (assume 30% growth from average)
+      const monthTarget = avgDailyRevenue * 30 * 1.3;
+
+      // Update insight elements
+      document.getElementById('bestDay').textContent = 
+        `${formatDate(bestDay)}: ${formatCurrency(bestDayRevenue)}`;
+      document.getElementById('averageDaily').textContent = formatCurrency(avgDailyRevenue);
+      document.getElementById('monthTarget').textContent = formatCurrency(monthTarget);
+    };
+
+    // Export to CSV
+    window.exportToCSV = () => {
+      let csv = 'Date,Total Sales,Total Revenue,Avg Transaction\n';
+      
+      const sortedDates = Object.keys(revenueData).sort().reverse();
+      sortedDates.forEach(date => {
+        const data = revenueData[date];
+        const avgTransaction = data.count > 0 ? data.total / data.count : 0;
+        csv += `${date},${data.count},${data.total},${avgTransaction}\n`;
+      });
+
+      downloadCSV(csv, 'revenue_report.csv');
+    };
+
+    // View day details
+    window.viewDayDetails = (date) => {
+      const data = revenueData[date];
+      const transactions = data.transactions;
+      
+      let details = `Date: ${date}\n`;
+      details += `Total Revenue: ${formatCurrency(data.total)}\n`;
+      details += `Total Sales: ${data.count}\n\n`;
+      details += 'Transactions:\n';
+      
+      transactions.forEach((t, i) => {
+        details += `${i+1}. ${t.product} - ${t.qty} × ₹${t.unitPrice} = ₹${t.total}\n`;
+      });
+
+      alert(details);
+    };
+
+    // Export day CSV
+    window.exportDayCSV = (date) => {
+      const data = revenueData[date];
+      let csv = `Date: ${date}\n`;
+      csv += `Total Revenue: ${data.total}\n`;
+      csv += `Total Sales: ${data.count}\n\n`;
+      csv += 'Product,Quantity,Unit Price,Total\n';
+      
+      data.transactions.forEach(t => {
+        csv += `${t.product},${t.qty},${t.unitPrice},${t.total}\n`;
+      });
+
+      downloadCSV(csv, `sales_${date}.csv`);
+    };
+
+    // Download CSV helper
+    const downloadCSV = (csv, filename) => {
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('hidden', '');
+      a.setAttribute('href', url);
+      a.setAttribute('download', filename);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', loadRevenueData);
+  </script>
+</body>
+</html>
