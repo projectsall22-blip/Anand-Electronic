@@ -1,0 +1,712 @@
+<!-- sales-data.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Data - Anand Electronic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .search-highlight {
+      background-color: rgba(255, 255, 0, 0.3);
+      padding: 2px 0;
+      border-radius: 2px;
+    }
+    .month-card {
+      transition: all 0.3s ease;
+    }
+    .month-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-3">
+      <!-- Mobile menu button and logo -->
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-store text-2xl"></i>
+          <h1 class="text-xl font-bold">Anand Electronic</h1>
+        </div>
+        
+        <!-- Mobile menu button -->
+        <button id="mobileMenuButton" class="md:hidden p-2">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex flex-col md:flex-row justify-between items-center mt-4 md:mt-0">
+        <div class="flex flex-wrap justify-center gap-4 w-full md:w-auto">
+          <a href="index.html" 
+             class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+            <i class="fas fa-box"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="add-product.html" 
+             class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+            <i class="fas fa-plus-circle"></i>
+            <span>Add Product</span>
+          </a>
+          <a href="sell-product.html" 
+             class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Sell</span>
+          </a>
+          <a href="revenue.html" 
+             class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+            <i class="fas fa-chart-line"></i>
+            <span>Revenue</span>
+          </a>
+          <a href="sales-data.html" 
+             class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+            <i class="fas fa-database"></i>
+            <span>Sales Data</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation (hidden by default) -->
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pt-4 border-t border-white/20">
+        <div class="flex flex-col space-y-3">
+          <a href="index.html" 
+             class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+            <i class="fas fa-box w-6"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="add-product.html" 
+             class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+            <i class="fas fa-plus-circle w-6"></i>
+            <span>Add Product</span>
+          </a>
+          <a href="sell-product.html" 
+             class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+            <i class="fas fa-shopping-cart w-6"></i>
+            <span>Sell</span>
+          </a>
+          <a href="revenue.html" 
+             class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+            <i class="fas fa-chart-line w-6"></i>
+            <span>Revenue</span>
+          </a>
+          <a href="sales-data.html" 
+             class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+            <i class="fas fa-database w-6"></i>
+            <span>Sales Data</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    // Mobile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+          // Change icon based on menu state
+          const icon = mobileMenuButton.querySelector('i');
+          if (mobileMenu.classList.contains('hidden')) {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+          } else {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+          }
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            const icon = mobileMenuButton.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+          });
+        });
+      }
+    });
+  </script>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <a href="index.html" class="text-blue-600 hover:text-blue-800 flex items-center space-x-2">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Dashboard</span>
+      </a>
+    </div>
+
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-4 shadow-lg">
+        <i class="fas fa-database text-white text-3xl"></i>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">Sales Data Records</h2>
+      <p class="text-gray-600">View all sales transactions with search and filtering options</p>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Search by Name -->
+        <div>
+          <label for="searchName" class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-user mr-2"></i>Search by Customer Name
+          </label>
+          <div class="relative">
+            <input type="text" id="searchName" placeholder="Enter customer name"
+                   class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+            <div class="absolute left-3 top-3 text-gray-400">
+              <i class="fas fa-search"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search by Phone -->
+        <div>
+          <label for="searchPhone" class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-phone mr-2"></i>Search by Mobile Number
+          </label>
+          <div class="relative">
+            <input type="text" id="searchPhone" placeholder="Enter mobile number"
+                   class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+            <div class="absolute left-3 top-3 text-gray-400">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date Filter -->
+        <div>
+          <label for="dateFilter" class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-calendar-alt mr-2"></i>Filter by Month
+          </label>
+          <select id="dateFilter" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+            <option value="all">All Months</option>
+            <!-- Months will be populated by JavaScript -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap gap-4 mt-6">
+        <button onclick="clearSearch()" 
+                class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg transition duration-300 flex items-center space-x-2">
+          <i class="fas fa-times"></i>
+          <span>Clear Search</span>
+        </button>
+        <div class="ml-auto">
+          <span class="text-sm text-gray-600">
+            Found <span id="resultCount" class="font-bold">0</span> transactions
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Month-wise Sales Sections -->
+    <div id="salesContainer">
+      <!-- Months will be dynamically loaded here -->
+      <div class="text-center py-10">
+        <i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-4"></i>
+        <p class="text-gray-600">Loading sales data...</p>
+      </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResults" class="hidden bg-white rounded-xl shadow-lg p-8 text-center">
+      <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">No Sales Found</h3>
+      <p class="text-gray-500">Try adjusting your search criteria or check back later</p>
+    </div>
+
+    <!-- Sale Details Modal -->
+    <div id="saleDetailsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+      <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-xl bg-white">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-gray-800">Sale Details</h3>
+          <button onclick="closeSaleDetails()" class="text-gray-400 hover:text-gray-600 text-2xl">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div id="saleDetailsContent" class="space-y-4">
+          <!-- Details will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+<footer class="bg-gray-800 text-white py-6 mt-8 md:mt-12">
+  <div class="container mx-auto px-4 text-center">
+    <p class="mb-2 text-sm md:text-base"> Anand Electronic. All rights reserved.</p>
+    <p class="text-gray-400 text-xs md:text-sm">Made by <i class="fas fa-heart text-red-500"></i>ART</p>
+  </div>
+</footer>
+
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    let allSales = [];
+    let searchTimeout;
+    const salesContainer = document.getElementById('salesContainer');
+    const searchNameInput = document.getElementById('searchName');
+    const searchPhoneInput = document.getElementById('searchPhone');
+    const dateFilterSelect = document.getElementById('dateFilter');
+    const resultCountElement = document.getElementById('resultCount');
+    const noResultsElement = document.getElementById('noResults');
+
+    // Format currency
+    const formatCurrency = (amount) => {
+      return '₹' + amount.toLocaleString('en-IN');
+    };
+
+    // Format date for display
+    const formatDateForDisplay = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      });
+    };
+
+    // Format time
+    const formatTime = (timestamp) => {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString('en-IN', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+    };
+
+    // Get month name from date string (YYYY-MM-DD)
+    const getMonthFromDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+    };
+
+    // Get month key for grouping
+    const getMonthKey = (dateString) => {
+      const date = new Date(dateString);
+      return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+    };
+
+    // Highlight search terms in text
+    const highlightText = (text, searchTerm) => {
+      if (!searchTerm || !text) return text;
+      
+      const lowerText = text.toLowerCase();
+      const lowerSearch = searchTerm.toLowerCase();
+      
+      if (!lowerText.includes(lowerSearch)) return text;
+      
+      const regex = new RegExp(`(${searchTerm})`, 'gi');
+      return text.replace(regex, '<span class="search-highlight">$1</span>');
+    };
+
+    // Load all sales data
+    const loadSalesData = async () => {
+      try {
+        const q = query(collection(db, "sales"), orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        allSales = [];
+        
+        snapshot.forEach(doc => {
+          allSales.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        
+        // Populate month filter dropdown
+        populateMonthFilter();
+        
+        // Display sales data
+        displaySalesData(allSales);
+        
+      } catch (error) {
+        console.error("Error loading sales data:", error);
+        salesContainer.innerHTML = `
+          <div class="text-center py-16">
+            <i class="fas fa-exclamation-circle text-5xl text-red-300 mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">Error Loading Sales Data</h3>
+            <p class="text-gray-500">Please check your connection and try again</p>
+            <button onclick="loadSalesData()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-300">
+              <i class="fas fa-redo mr-2"></i>Retry
+            </button>
+          </div>
+        `;
+      }
+    };
+
+    // Populate month filter dropdown
+    const populateMonthFilter = () => {
+      const months = new Set();
+      allSales.forEach(sale => {
+        const monthKey = getMonthKey(sale.date);
+        months.add(monthKey);
+      });
+      
+      // Convert to array and sort descending (newest first)
+      const sortedMonths = Array.from(months).sort().reverse();
+      
+      // Clear existing options (keeping "All Months")
+      while (dateFilterSelect.options.length > 1) {
+        dateFilterSelect.remove(1);
+      }
+      
+      // Add month options
+      sortedMonths.forEach(monthKey => {
+        const [year, month] = monthKey.split('-');
+        const monthName = new Date(year, month - 1).toLocaleDateString('en-IN', { 
+          month: 'long', 
+          year: 'numeric' 
+        });
+        
+        const option = document.createElement('option');
+        option.value = monthKey;
+        option.textContent = monthName;
+        dateFilterSelect.appendChild(option);
+      });
+    };
+
+    // Display sales data
+    const displaySalesData = (sales) => {
+      if (sales.length === 0) {
+        noResultsElement.classList.remove('hidden');
+        salesContainer.innerHTML = '';
+        resultCountElement.textContent = '0';
+        return;
+      }
+      
+      noResultsElement.classList.add('hidden');
+      resultCountElement.textContent = sales.length;
+      
+      // Group sales by month
+      const salesByMonth = {};
+      sales.forEach(sale => {
+        const monthKey = getMonthKey(sale.date);
+        if (!salesByMonth[monthKey]) {
+          salesByMonth[monthKey] = [];
+        }
+        salesByMonth[monthKey].push(sale);
+      });
+      
+      // Sort month keys descending
+      const monthKeys = Object.keys(salesByMonth).sort().reverse();
+      
+      salesContainer.innerHTML = '';
+      
+      // Display each month
+      monthKeys.forEach(monthKey => {
+        const monthSales = salesByMonth[monthKey];
+        const [year, month] = monthKey.split('-');
+        const monthName = new Date(year, month - 1).toLocaleDateString('en-IN', { 
+          month: 'long', 
+          year: 'numeric' 
+        });
+        
+        // Calculate month totals
+        const monthTotal = monthSales.reduce((sum, sale) => sum + sale.total, 0);
+        const transactionCount = monthSales.length;
+        
+        let monthHTML = `
+          <div class="month-card bg-white rounded-xl shadow-lg overflow-hidden mb-8 fade-in">
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b">
+              <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                  <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-calendar-alt mr-3 text-blue-600"></i>
+                    ${monthName}
+                  </h3>
+                  <p class="text-gray-600 text-sm mt-1">
+                    ${transactionCount} transaction${transactionCount !== 1 ? 's' : ''}
+                  </p>
+                </div>
+                <div class="mt-2 md:mt-0">
+                  <span class="text-lg font-bold text-green-600">${formatCurrency(monthTotal)}</span>
+                  <p class="text-gray-500 text-sm text-right">Total Revenue</p>
+                </div>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+        `;
+        
+        monthSales.forEach(sale => {
+          const searchName = searchNameInput.value.trim();
+          const searchPhone = searchPhoneInput.value.trim();
+          const customerName = sale.customerName || 'Walk-in Customer';
+          const mobileNo = sale.mobileNo || '';
+          
+          monthHTML += `
+            <tr class="hover:bg-gray-50 transition duration-150 cursor-pointer" onclick="viewSaleDetails('${sale.id}')">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">${formatDateForDisplay(sale.date)}</div>
+                <div class="text-sm text-gray-500">${formatTime(sale.timestamp)}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm font-medium text-gray-900">
+                  ${highlightText(customerName, searchName)}
+                </div>
+                <div class="text-sm text-gray-500">
+                  ${mobileNo ? highlightText(mobileNo, searchPhone) : 'No phone'}
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">${sale.product}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                ${sale.qty} × ${formatCurrency(sale.unitPrice)}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-lg font-bold text-green-600">
+                ${formatCurrency(sale.total)}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                  ${sale.paymentMode === 'Cash' ? 'bg-green-100 text-green-800' : 
+                    sale.paymentMode === 'UPI' ? 'bg-blue-100 text-blue-800' :
+                    sale.paymentMode === 'Card' ? 'bg-purple-100 text-purple-800' :
+                    'bg-gray-100 text-gray-800'}">
+                  ${sale.paymentMode || 'Cash'}
+                </span>
+              </td>
+            </tr>
+          `;
+        });
+        
+        monthHTML += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        
+        salesContainer.innerHTML += monthHTML;
+      });
+    };
+
+    // Filter sales based on search criteria
+    const filterSales = () => {
+      const searchName = searchNameInput.value.trim().toLowerCase();
+      const searchPhone = searchPhoneInput.value.trim().toLowerCase();
+      const selectedMonth = dateFilterSelect.value;
+      
+      let filteredSales = allSales;
+      
+      // Filter by name
+      if (searchName) {
+        filteredSales = filteredSales.filter(sale => {
+          const customerName = (sale.customerName || '').toLowerCase();
+          return customerName.includes(searchName);
+        });
+      }
+      
+      // Filter by phone
+      if (searchPhone) {
+        filteredSales = filteredSales.filter(sale => {
+          const mobileNo = (sale.mobileNo || '').toLowerCase();
+          return mobileNo.includes(searchPhone);
+        });
+      }
+      
+      // Filter by month
+      if (selectedMonth !== 'all') {
+        filteredSales = filteredSales.filter(sale => {
+          const saleMonthKey = getMonthKey(sale.date);
+          return saleMonthKey === selectedMonth;
+        });
+      }
+      
+      displaySalesData(filteredSales);
+    };
+
+    // View sale details
+    window.viewSaleDetails = async (saleId) => {
+      try {
+        const sale = allSales.find(s => s.id === saleId);
+        if (!sale) return;
+        
+        const detailsContent = document.getElementById('saleDetailsContent');
+        detailsContent.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Column: Sale Details -->
+            <div class="space-y-4">
+              <div class="bg-blue-50 rounded-lg p-4">
+                <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                  <i class="fas fa-info-circle mr-2"></i>Sale Information
+                </h4>
+                <div class="space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Transaction ID:</span>
+                    <span class="font-semibold text-gray-800">${sale.id}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Date:</span>
+                    <span class="font-semibold text-gray-800">${formatDateForDisplay(sale.date)}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Time:</span>
+                    <span class="font-semibold text-gray-800">${formatTime(sale.timestamp)}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Payment Mode:</span>
+                    <span class="font-semibold ${sale.paymentMode === 'Cash' ? 'text-green-600' : 'text-blue-600'}">
+                      ${sale.paymentMode || 'Cash'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="bg-green-50 rounded-lg p-4">
+                <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                  <i class="fas fa-shopping-cart mr-2"></i>Product Details
+                </h4>
+                <div class="space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Product:</span>
+                    <span class="font-semibold text-gray-800">${sale.product}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Quantity:</span>
+                    <span class="font-semibold text-gray-800">${sale.qty}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Unit Price:</span>
+                    <span class="font-semibold text-gray-800">${formatCurrency(sale.unitPrice)}</span>
+                  </div>
+                  <div class="border-t pt-2 mt-2">
+                    <div class="flex justify-between text-lg">
+                      <span class="font-bold text-gray-800">Total Amount:</span>
+                      <span class="font-bold text-green-600">${formatCurrency(sale.total)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Right Column: Customer Details -->
+            <div class="space-y-4">
+              <div class="bg-purple-50 rounded-lg p-4">
+                <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                  <i class="fas fa-user-circle mr-2"></i>Customer Information
+                </h4>
+                <div class="space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Customer Name:</span>
+                    <span class="font-semibold text-gray-800">${sale.customerName || 'Walk-in Customer'}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Mobile Number:</span>
+                    <span class="font-semibold text-gray-800">${sale.mobileNo || 'Not provided'}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Slip/Bill No:</span>
+                    <span class="font-semibold text-gray-800">${sale.slipNo || 'Not provided'}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="bg-yellow-50 rounded-lg p-4">
+                <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                  <i class="fas fa-clock mr-2"></i>Transaction Timeline
+                </h4>
+                <div class="space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Transaction Time:</span>
+                    <span class="font-semibold text-gray-800">${new Date(sale.timestamp).toLocaleString()}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Days Ago:</span>
+                    <span class="font-semibold text-gray-800">${Math.floor((new Date() - new Date(sale.timestamp)) / (1000 * 60 * 60 * 24))} days</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pt-6 border-t">
+            <button onclick="closeSaleDetails()" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold transition duration-300">
+              <i class="fas fa-times mr-2"></i>Close Details
+            </button>
+          </div>
+        `;
+        
+        document.getElementById('saleDetailsModal').classList.remove('hidden');
+      } catch (error) {
+        console.error("Error loading sale details:", error);
+        alert("Error loading sale details. Please try again.");
+      }
+    };
+
+    // Close sale details modal
+    window.closeSaleDetails = () => {
+      document.getElementById('saleDetailsModal').classList.add('hidden');
+    };
+
+    // Clear search
+    window.clearSearch = () => {
+      searchNameInput.value = '';
+      searchPhoneInput.value = '';
+      dateFilterSelect.value = 'all';
+      displaySalesData(allSales);
+    };
+
+    // Setup event listeners for search
+    searchNameInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(filterSales, 300);
+    });
+    
+    searchPhoneInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(filterSales, 300);
+    });
+    
+    dateFilterSelect.addEventListener('change', filterSales);
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+      const modal = document.getElementById('saleDetailsModal');
+      if (event.target === modal) {
+        closeSaleDetails();
+      }
+    };
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', loadSalesData);
+  </script>
+</body>
+</html>
