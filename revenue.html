@@ -7,6 +7,8 @@
   <title>Revenue - Anand Electronic</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Add Excel library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -49,6 +51,11 @@
           <i class="fas fa-chart-line"></i>
           <span>Revenue</span>
         </a>
+        <a href="sales-data.html" 
+           class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
+          <i class="fas fa-database"></i>
+          <span>Sales Data</span>
+        </a>
       </div>
     </div>
     
@@ -76,10 +83,10 @@
           <span>Revenue</span>
         </a>
         <a href="sales-data.html" 
-   class="nav-link px-4 py-2 rounded-lg transition duration-300 flex items-center space-x-2 hover:bg-white/20">
-  <i class="fas fa-database"></i>
-  <span>Sales Data</span>
-</a>
+           class="nav-link px-4 py-3 rounded-lg transition duration-300 flex items-center space-x-3 hover:bg-white/20">
+          <i class="fas fa-database w-6"></i>
+          <span>Sales Data</span>
+        </a>
       </div>
     </div>
   </div>
@@ -118,6 +125,7 @@
     }
   });
 </script>
+
   <div class="container mx-auto px-4 py-8">
     <div class="mb-8">
       <a href="index.html" class="text-blue-600 hover:text-blue-800 flex items-center space-x-2">
@@ -208,10 +216,10 @@
             <i class="fas fa-table mr-2"></i>Daily Revenue Report
           </h3>
           <div class="flex items-center space-x-2">
-            <button onclick="exportToCSV()" 
+            <button onclick="exportToExcel()" 
                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-300">
-              <i class="fas fa-file-export"></i>
-              <span>Export CSV</span>
+              <i class="fas fa-file-excel"></i>
+              <span>Export Excel</span>
             </button>
           </div>
         </div>
@@ -223,7 +231,7 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Sales</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Revenue</th>
-              <th class="px6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Transaction</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Transaction</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -270,6 +278,7 @@
       </div>
     </div>
   </div>
+
   <!-- Footer -->
 <footer class="bg-gray-800 text-white py-6 mt-8 md:mt-12">
   <div class="container mx-auto px-4 text-center">
@@ -277,6 +286,7 @@
     <p class="text-gray-400 text-xs md:text-sm">Made by <i class="fas fa-heart text-red-500"></i>ART</p>
   </div>
 </footer>
+
   <script type="module">
     import { db } from "./firebase.js";
     import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -444,9 +454,9 @@
                       class="text-blue-600 hover:text-blue-900 mr-4">
                 <i class="fas fa-eye mr-1"></i>View
               </button>
-              <button onclick="exportDayCSV('${date}')" 
+              <button onclick="exportDayExcel('${date}')" 
                       class="text-green-600 hover:text-green-900">
-                <i class="fas fa-download mr-1"></i>Export
+                <i class="fas fa-file-excel mr-1"></i>Export
               </button>
             </td>
           </tr>
@@ -590,63 +600,231 @@
       document.getElementById('monthTarget').textContent = formatCurrency(monthTarget);
     };
 
-    // Export to CSV
-    window.exportToCSV = () => {
-      let csv = 'Date,Total Sales,Total Revenue,Avg Transaction\n';
+    // Export to Excel
+    window.exportToExcel = () => {
+      if (Object.keys(revenueData).length === 0) {
+        alert('No data available to export!');
+        return;
+      }
+
+      // Prepare data array
+      const dataArray = [];
       
+      // Add headers
+      dataArray.push(['Date', 'Total Sales', 'Total Revenue (₹)', 'Average Transaction (₹)', 'Formatted Date']);
+      
+      // Sort dates in descending order
       const sortedDates = Object.keys(revenueData).sort().reverse();
+      
+      // Add data rows
       sortedDates.forEach(date => {
         const data = revenueData[date];
         const avgTransaction = data.count > 0 ? data.total / data.count : 0;
-        csv += `${date},${data.count},${data.total},${avgTransaction}\n`;
+        
+        dataArray.push([
+          date,
+          data.count,
+          data.total,
+          avgTransaction,
+          formatDate(date)
+        ]);
       });
 
-      downloadCSV(csv, 'revenue_report.csv');
+      // Create worksheet
+      const ws = XLSX.utils.aoa_to_sheet(dataArray);
+      
+      // Auto-size columns
+      const wscols = [
+        {wch: 12}, // Date
+        {wch: 12}, // Total Sales
+        {wch: 18}, // Total Revenue
+        {wch: 22}, // Avg Transaction
+        {wch: 35}  // Formatted Date
+      ];
+      ws['!cols'] = wscols;
+
+      // Add styling through cell types
+      for (let i = 1; i <= sortedDates.length; i++) {
+        // Format revenue as currency
+        const revenueCell = XLSX.utils.encode_cell({r: i, c: 2});
+        if (ws[revenueCell]) {
+          ws[revenueCell].t = 'n';
+          ws[revenueCell].z = '"₹"#,##0.00';
+        }
+        
+        // Format avg transaction as currency
+        const avgCell = XLSX.utils.encode_cell({r: i, c: 3});
+        if (ws[avgCell]) {
+          ws[avgCell].t = 'n';
+          ws[avgCell].z = '"₹"#,##0.00';
+        }
+      }
+
+      // Create workbook
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Revenue Report");
+
+      // Generate filename with current date
+      const currentDate = new Date().toISOString().split('T')[0];
+      const filename = `Revenue_Report_${currentDate}.xlsx`;
+
+      // Export file
+      XLSX.writeFile(wb, filename);
     };
 
     // View day details
     window.viewDayDetails = (date) => {
       const data = revenueData[date];
-      const transactions = data.transactions;
       
-      let details = `Date: ${date}\n`;
-      details += `Total Revenue: ${formatCurrency(data.total)}\n`;
-      details += `Total Sales: ${data.count}\n\n`;
-      details += 'Transactions:\n';
+      // Create modal HTML
+      const modalHTML = `
+        <div id="dayDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-xl bg-white">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800">
+                <i class="fas fa-calendar-day mr-2"></i>Sales Details - ${formatDate(date)}
+              </h3>
+              <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-2xl"></i>
+              </button>
+            </div>
+            
+            <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-600">Total Revenue</p>
+                  <p class="text-xl font-bold text-blue-700">${formatCurrency(data.total)}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600">Total Transactions</p>
+                  <p class="text-xl font-bold text-green-700">${data.count} sales</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th class="px-4 py-2 text-left">#</th>
+                    <th class="px-4 py-2 text-left">Product</th>
+                    <th class="px-4 py-2 text-left">Quantity</th>
+                    <th class="px-4 py-2 text-left">Unit Price</th>
+                    <th class="px-4 py-2 text-left">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${data.transactions.map((t, i) => `
+                    <tr class="border-b hover:bg-gray-50">
+                      <td class="px-4 py-2">${i + 1}</td>
+                      <td class="px-4 py-2">${t.product}</td>
+                      <td class="px-4 py-2">${t.qty}</td>
+                      <td class="px-4 py-2">${formatCurrency(t.unitPrice)}</td>
+                      <td class="px-4 py-2 font-bold">${formatCurrency(t.total)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="mt-6 flex justify-between">
+              <button onclick="exportDayExcel('${date}')" 
+                      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                <i class="fas fa-file-excel"></i>
+                <span>Export Day Report</span>
+              </button>
+              <button onclick="closeModal()" 
+                      class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
       
-      transactions.forEach((t, i) => {
-        details += `${i+1}. ${t.product} - ${t.qty} × ₹${t.unitPrice} = ₹${t.total}\n`;
-      });
-
-      alert(details);
+      // Add modal to body
+      const modalDiv = document.createElement('div');
+      modalDiv.innerHTML = modalHTML;
+      document.body.appendChild(modalDiv);
+      
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
     };
 
-    // Export day CSV
-    window.exportDayCSV = (date) => {
+    // Close modal function
+    window.closeModal = () => {
+      const modal = document.getElementById('dayDetailsModal');
+      if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+      }
+    };
+
+    // Export day details to Excel
+    window.exportDayExcel = (date) => {
       const data = revenueData[date];
-      let csv = `Date: ${date}\n`;
-      csv += `Total Revenue: ${data.total}\n`;
-      csv += `Total Sales: ${data.count}\n\n`;
-      csv += 'Product,Quantity,Unit Price,Total\n';
       
-      data.transactions.forEach(t => {
-        csv += `${t.product},${t.qty},${t.unitPrice},${t.total}\n`;
+      // Prepare data array
+      const dataArray = [];
+      
+      // Add title and summary
+      dataArray.push([`Sales Report - ${date}`]);
+      dataArray.push([]);
+      dataArray.push(['Summary']);
+      dataArray.push(['Total Revenue:', data.total]);
+      dataArray.push(['Total Transactions:', data.count]);
+      dataArray.push(['Average Transaction:', data.count > 0 ? data.total / data.count : 0]);
+      dataArray.push([]);
+      dataArray.push(['Transaction Details']);
+      dataArray.push(['#', 'Product', 'Quantity', 'Unit Price (₹)', 'Total (₹)']);
+      
+      // Add transaction details
+      data.transactions.forEach((t, i) => {
+        dataArray.push([
+          i + 1,
+          t.product,
+          t.qty,
+          t.unitPrice,
+          t.total
+        ]);
       });
 
-      downloadCSV(csv, `sales_${date}.csv`);
-    };
+      // Create worksheet
+      const ws = XLSX.utils.aoa_to_sheet(dataArray);
+      
+      // Auto-size columns
+      const wscols = [
+        {wch: 5},  // #
+        {wch: 25}, // Product
+        {wch: 10}, // Quantity
+        {wch: 15}, // Unit Price
+        {wch: 15}  // Total
+      ];
+      ws['!cols'] = wscols;
 
-    // Download CSV helper
-    const downloadCSV = (csv, filename) => {
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.setAttribute('hidden', '');
-      a.setAttribute('href', url);
-      a.setAttribute('download', filename);
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Format currency cells
+      for (let i = 9; i < 9 + data.transactions.length; i++) {
+        // Unit Price column (column D)
+        const unitPriceCell = XLSX.utils.encode_cell({r: i, c: 3});
+        if (ws[unitPriceCell]) {
+          ws[unitPriceCell].t = 'n';
+          ws[unitPriceCell].z = '"₹"#,##0.00';
+        }
+        
+        // Total column (column E)
+        const totalCell = XLSX.utils.encode_cell({r: i, c: 4});
+        if (ws[totalCell]) {
+          ws[totalCell].t = 'n';
+          ws[totalCell].z = '"₹"#,##0.00';
+        }
+      }
+
+      // Create workbook
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Day Report");
+
+      // Export file
+      XLSX.writeFile(wb, `Sales_${date}.xlsx`);
     };
 
     // Initialize page
