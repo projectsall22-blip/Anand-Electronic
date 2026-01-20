@@ -127,7 +127,7 @@
   });
 </script>
 
-  <div class="container mx-auto px-4 py-8 max-w-4xl">
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
     <div class="mb-8">
       <a href="index.html" class="text-blue-600 hover:text-blue-800 flex items-center space-x-2">
         <i class="fas fa-arrow-left"></i>
@@ -143,8 +143,8 @@
             <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
               <i class="fas fa-shopping-cart text-green-600 text-2xl"></i>
             </div>
-            <h2 class="text-2xl font-bold text-gray-800">Sell Product</h2>
-            <p class="text-gray-600 mt-2">Select a product and add customer details to complete the sale</p>
+            <h2 class="text-2xl font-bold text-gray-800">Sell Products</h2>
+            <p class="text-gray-600 mt-2">Add multiple products and customer details to complete the sale</p>
           </div>
 
           <!-- Customer Information Section -->
@@ -193,17 +193,24 @@
             </div>
           </div>
 
+          <!-- Product Selection and Cart Section -->
           <div class="space-y-6">
-            <div>
-              <label for="product" class="block text-sm font-medium text-gray-700 mb-2">
-                <i class="fas fa-box mr-2"></i>Select Product
-              </label>
-              <select id="product" 
-                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-300">
-                <option value="">Loading products...</option>
-              </select>
-            </div>
-
+  <div>
+    <label for="product" class="block text-sm font-medium text-gray-700 mb-2">
+      <i class="fas fa-box mr-2"></i>Select Product
+    </label>
+    <div class="flex flex-col md:flex-row gap-4 items-center">
+      <select id="product" 
+              class="w-full md:w-auto md:flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-300">
+        <option value="">Loading products...</option>
+      </select>
+      <button onclick="addToCart()" 
+              class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition duration-300 flex items-center justify-center">
+        <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+      </button>
+    </div>
+  </div>
+  <!-- Rest of the code remains the same -->
             <div id="productInfo" class="hidden bg-blue-50 border border-blue-200 rounded-xl p-6">
               <div class="flex justify-between items-start">
                 <div>
@@ -226,7 +233,7 @@
               </div>
             </div>
 
-            <div>
+            <div id="quantitySection" class="hidden">
               <label for="qty" class="block text-sm font-medium text-gray-700 mb-2">
                 <i class="fas fa-hashtag mr-2"></i>Quantity
               </label>
@@ -245,21 +252,42 @@
               <p class="text-sm text-gray-500 mt-2">Available: <span id="maxQty">0</span> units</p>
             </div>
 
+            <!-- Cart Items -->
+            <div id="cartSection" class="hidden">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                  <i class="fas fa-shopping-basket mr-2"></i>Cart Items
+                </h3>
+                <button onclick="clearCart()" 
+                        class="text-sm text-red-600 hover:text-red-800 flex items-center">
+                  <i class="fas fa-trash-alt mr-1"></i> Clear All
+                </button>
+              </div>
+              
+              <div id="cartItems" class="space-y-3 max-h-64 overflow-y-auto p-2">
+                <!-- Cart items will be added here dynamically -->
+              </div>
+              
+              <div class="text-sm text-gray-500 text-center py-4" id="emptyCartMessage">
+                No items in cart. Add products to start a sale.
+              </div>
+            </div>
+
+            <!-- Order Summary -->
             <div class="bg-gray-50 rounded-xl p-6">
               <h4 class="font-bold text-gray-700 mb-4">Order Summary</h4>
               <div class="space-y-3">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Unit Price:</span>
-                  <span id="unitPrice" class="font-semibold">₹0</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Quantity:</span>
-                  <span id="summaryQty" class="font-semibold">0</span>
+                <div id="cartSummary" class="space-y-2">
+                  <!-- Individual items will be shown here -->
                 </div>
                 <div class="border-t pt-3">
                   <div class="flex justify-between text-lg">
                     <span class="font-bold text-gray-800">Total Amount:</span>
                     <span id="totalAmount" class="font-bold text-green-600">₹0</span>
+                  </div>
+                  <div class="flex justify-between text-sm text-gray-600 mt-1">
+                    <span>Total Items:</span>
+                    <span id="totalItems">0</span>
                   </div>
                 </div>
               </div>
@@ -268,7 +296,7 @@
             <div class="pt-6 border-t">
               <button onclick="sell()" id="sellBtn"
                       class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition duration-300 transform hover:-translate-y-1 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-cash-register mr-2"></i>Complete Sale
+                <i class="fas fa-cash-register mr-2"></i>Complete Sale (<span id="cartCount">0</span> items)
               </button>
             </div>
           </div>
@@ -362,6 +390,10 @@
               <i class="fas fa-check-circle mt-1 mr-2"></i>
               <span>Sales are recorded for revenue tracking</span>
             </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle mt-1 mr-2"></i>
+              <span>You can add multiple products to a single sale</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -382,9 +414,11 @@
           <p class="text-sm text-gray-600 mb-1">Customer: <span id="customerNameDisplay" class="font-semibold">-</span></p>
           <p class="text-sm text-gray-600 mb-1">Mobile: <span id="mobileNoDisplay" class="font-semibold">-</span></p>
           <p class="text-sm text-gray-600">Slip No: <span id="slipNoDisplay" class="font-semibold">-</span></p>
+          <p class="text-sm text-gray-600 mt-2">Items: <span id="itemsCount" class="font-semibold">0</span></p>
+          <p class="text-sm text-gray-600">Total: <span id="totalAmountDisplay" class="font-semibold">₹0</span></p>
         </div>
         <div class="flex space-x-3">
-          <button onclick="document.getElementById('successModal').classList.add('hidden')" 
+          <button onclick="closeSuccessModal()" 
                   class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-300">
             Continue Selling
           </button>
@@ -427,16 +461,12 @@
     import { collection, getDocs, doc, updateDoc, addDoc, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     let products = {};
-    const select = document.getElementById('product');
-    const productInfoDiv = document.getElementById('productInfo');
-    const sellBtn = document.getElementById('sellBtn');
-    const qtyInput = document.getElementById('qty');
-    const recentSalesDiv = document.getElementById('recentSales');
-    const customerNameInput = document.getElementById('customerName');
-    const mobileNoInput = document.getElementById('mobileNo');
-    const slipNoInput = document.getElementById('slipNo');
-    const paymentModeInput = document.getElementById('paymentMode');
-
+    let cart = [];
+    
+    // DOM element references - initialized after DOM is loaded
+    let select, productInfoDiv, quantitySection, cartSection, emptyCartMessage, cartItems, cartSummary, sellBtn, qtyInput;
+    let recentSalesDiv, customerNameInput, mobileNoInput, slipNoInput, paymentModeInput;
+    
     // Format currency
     const formatCurrency = (amount) => {
       return '₹' + amount.toLocaleString('en-IN');
@@ -469,6 +499,11 @@
       return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
     };
 
+    // Close success modal
+    window.closeSuccessModal = () => {
+      document.getElementById('successModal').classList.add('hidden');
+    };
+
     // Show export loading modal
     const showExportLoading = (title, message) => {
       document.getElementById('exportTitle').textContent = title;
@@ -479,10 +514,10 @@
 
     // Update export progress
     const updateExportProgress = (percent, status = '') => {
-      document.getElementById('exportProgressBar').style.width = percent + '%';
-      if (status) {
-        document.getElementById('exportStatus').textContent = status;
-      }
+      const progressBar = document.getElementById('exportProgressBar');
+      const statusElement = document.getElementById('exportStatus');
+      if (progressBar) progressBar.style.width = percent + '%';
+      if (status && statusElement) statusElement.textContent = status;
     };
 
     // Hide export loading modal
@@ -490,27 +525,58 @@
       document.getElementById('exportLoadingModal').classList.add('hidden');
     };
 
+    // Initialize DOM references
+    const initializeDOMElements = () => {
+      select = document.getElementById('product');
+      productInfoDiv = document.getElementById('productInfo');
+      quantitySection = document.getElementById('quantitySection');
+      cartSection = document.getElementById('cartSection');
+      emptyCartMessage = document.getElementById('emptyCartMessage');
+      cartItems = document.getElementById('cartItems');
+      cartSummary = document.getElementById('cartSummary');
+      sellBtn = document.getElementById('sellBtn');
+      qtyInput = document.getElementById('qty');
+      recentSalesDiv = document.getElementById('recentSales');
+      customerNameInput = document.getElementById('customerName');
+      mobileNoInput = document.getElementById('mobileNo');
+      slipNoInput = document.getElementById('slipNo');
+      paymentModeInput = document.getElementById('paymentMode');
+    };
+
+    // Safe DOM element update function
+    const safeUpdateElement = (elementId, text, property = 'textContent') => {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element[property] = text;
+      }
+    };
+
     // Load products
     const loadProducts = async () => {
       try {
         const snap = await getDocs(collection(db, "products"));
         products = {};
-        select.innerHTML = '<option value="">Select a product</option>';
         
-        snap.forEach(d => {
-          products[d.id] = { id: d.id, ...d.data() };
-          const product = d.data();
-          const stockStatus = product.stock === 0 ? ' (Out of Stock)' : 
-                             product.stock < 10 ? ' (Low Stock)' : '';
+        if (select) {
+          select.innerHTML = '<option value="">Select a product</option>';
           
-          select.innerHTML += `<option value="${d.id}">${product.name} - Stock: ${product.stock}${stockStatus}</option>`;
-        });
+          snap.forEach(d => {
+            products[d.id] = { id: d.id, ...d.data() };
+            const product = d.data();
+            const stockStatus = product.stock === 0 ? ' (Out of Stock)' : 
+                               product.stock < 10 ? ' (Low Stock)' : '';
+            
+            select.innerHTML += `<option value="${d.id}">${product.name} - Stock: ${product.stock}${stockStatus}</option>`;
+          });
+        }
         
         // Load recent sales
         await loadRecentSales();
       } catch (error) {
         console.error("Error loading products:", error);
-        select.innerHTML = '<option value="">Error loading products</option>';
+        if (select) {
+          select.innerHTML = '<option value="">Error loading products</option>';
+        }
       }
     };
 
@@ -519,6 +585,9 @@
       try {
         const q = query(collection(db, "sales"), orderBy("timestamp", "desc"), limit(5));
         const snap = await getDocs(q);
+        
+        if (!recentSalesDiv) return;
+        
         recentSalesDiv.innerHTML = '';
         
         if (snap.empty) {
@@ -586,92 +655,264 @@
         });
       } catch (error) {
         console.error("Error loading recent sales:", error);
-        recentSalesDiv.innerHTML = `
-          <div class="text-center py-8">
-            <i class="fas fa-exclamation-triangle text-3xl text-red-300 mb-4"></i>
-            <p class="text-gray-500">Error loading sales</p>
-          </div>
-        `;
+        if (recentSalesDiv) {
+          recentSalesDiv.innerHTML = `
+            <div class="text-center py-8">
+              <i class="fas fa-exclamation-triangle text-3xl text-red-300 mb-4"></i>
+              <p class="text-gray-500">Error loading sales</p>
+            </div>
+          `;
+        }
       }
     };
 
     // Update product info when selection changes
-    select.onchange = () => {
+    const updateProductInfo = () => {
+      if (!select || !productInfoDiv || !quantitySection) return;
+      
       const productId = select.value;
       if (productId && products[productId]) {
         const p = products[productId];
         productInfoDiv.classList.remove('hidden');
+        quantitySection.classList.remove('hidden');
         
-        document.getElementById('selectedProductName').textContent = p.name;
-        document.getElementById('selectedProductPrice').textContent = `₹${p.price}`;
-        document.getElementById('selectedProductStock').textContent = p.stock;
-        document.getElementById('maxQty').textContent = p.stock;
+        safeUpdateElement('selectedProductName', p.name);
+        safeUpdateElement('selectedProductPrice', `₹${p.price}`);
+        safeUpdateElement('selectedProductStock', p.stock.toString());
+        safeUpdateElement('maxQty', p.stock.toString());
+        
+        // Reset quantity to 1
+        if (qtyInput) {
+          qtyInput.value = 1;
+          qtyInput.max = p.stock;
+        }
         
         // Update stock status
         const stockStatus = document.getElementById('stockStatus');
-        if (p.stock === 0) {
-          stockStatus.textContent = 'Out of Stock';
-          stockStatus.className = 'bg-red-100 text-red-800 text-sm font-semibold px-3 py-1 rounded-full';
-          sellBtn.disabled = true;
-        } else if (p.stock < 10) {
-          stockStatus.textContent = 'Low Stock';
-          stockStatus.className = 'bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1 rounded-full';
-          sellBtn.disabled = false;
-        } else {
-          stockStatus.textContent = 'In Stock';
-          stockStatus.className = 'bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full';
-          sellBtn.disabled = false;
+        if (stockStatus) {
+          if (p.stock === 0) {
+            stockStatus.textContent = 'Out of Stock';
+            stockStatus.className = 'bg-red-100 text-red-800 text-sm font-semibold px-3 py-1 rounded-full';
+          } else if (p.stock < 10) {
+            stockStatus.textContent = 'Low Stock';
+            stockStatus.className = 'bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1 rounded-full';
+          } else {
+            stockStatus.textContent = 'In Stock';
+            stockStatus.className = 'bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full';
+          }
         }
-        
-        // Update summary
-        updateSummary();
       } else {
-        productInfoDiv.classList.add('hidden');
-        sellBtn.disabled = true;
+        if (productInfoDiv) productInfoDiv.classList.add('hidden');
+        if (quantitySection) quantitySection.classList.add('hidden');
       }
     };
 
     // Quantity control functions
     window.decreaseQty = () => {
-      if (qtyInput.value > 1) {
+      if (qtyInput && qtyInput.value > 1) {
         qtyInput.value = parseInt(qtyInput.value) - 1;
-        updateSummary();
       }
     };
 
     window.increaseQty = () => {
+      if (!select || !qtyInput) return;
+      
       const productId = select.value;
       if (productId && products[productId]) {
         const maxQty = products[productId].stock;
         if (parseInt(qtyInput.value) < maxQty) {
           qtyInput.value = parseInt(qtyInput.value) + 1;
-          updateSummary();
         }
       }
     };
 
-    // Update order summary
-    const updateSummary = () => {
+    // Add product to cart
+    window.addToCart = () => {
+      if (!select || !qtyInput) return;
+      
       const productId = select.value;
-      if (productId && products[productId]) {
-        const p = products[productId];
-        const qty = parseInt(qtyInput.value) || 0;
-        
-        document.getElementById('unitPrice').textContent = formatCurrency(p.price);
-        document.getElementById('summaryQty').textContent = qty;
-        document.getElementById('totalAmount').textContent = formatCurrency(p.price * qty);
-        
-        // Validate quantity
-        if (qty > p.stock) {
-          document.getElementById('totalAmount').className = 'font-bold text-red-600';
-          sellBtn.disabled = true;
-        } else if (qty <= 0) {
-          sellBtn.disabled = true;
+      const quantity = parseInt(qtyInput.value) || 1;
+      
+      if (!productId || !products[productId]) {
+        alert("Please select a product");
+        return;
+      }
+      
+      const product = products[productId];
+      
+      if (quantity <= 0) {
+        alert("Please enter a valid quantity");
+        return;
+      }
+      
+      if (quantity > product.stock) {
+        alert(`Not enough stock! Only ${product.stock} units available.`);
+        return;
+      }
+      
+      // Check if product already exists in cart
+      const existingIndex = cart.findIndex(item => item.id === productId);
+      
+      if (existingIndex > -1) {
+        // Update quantity if product already in cart
+        const newQty = cart[existingIndex].quantity + quantity;
+        if (newQty > product.stock) {
+          alert(`Cannot add more. Only ${product.stock - cart[existingIndex].quantity} more units available.`);
+          return;
+        }
+        cart[existingIndex].quantity = newQty;
+        cart[existingIndex].total = newQty * product.price;
+      } else {
+        // Add new product to cart
+        cart.push({
+          id: productId,
+          name: product.name,
+          price: product.price,
+          quantity: quantity,
+          total: quantity * product.price,
+          stock: product.stock
+        });
+      }
+      
+      // Update UI
+      updateCartDisplay();
+      updateOrderSummary();
+      
+      // Reset selection
+      if (select) select.value = '';
+      if (productInfoDiv) productInfoDiv.classList.add('hidden');
+      if (quantitySection) quantitySection.classList.add('hidden');
+      if (qtyInput) qtyInput.value = 1;
+    };
+
+    // Remove item from cart
+    const removeFromCart = (productId) => {
+      cart = cart.filter(item => item.id !== productId);
+      updateCartDisplay();
+      updateOrderSummary();
+    };
+
+    // Update cart quantity
+    const updateCartQuantity = (productId, newQuantity) => {
+      const index = cart.findIndex(item => item.id === productId);
+      if (index > -1) {
+        const product = products[productId];
+        if (newQuantity <= 0) {
+          removeFromCart(productId);
+        } else if (newQuantity <= product.stock) {
+          cart[index].quantity = newQuantity;
+          cart[index].total = newQuantity * product.price;
+          updateCartDisplay();
+          updateOrderSummary();
         } else {
-          document.getElementById('totalAmount').className = 'font-bold text-green-600';
-          sellBtn.disabled = false;
+          alert(`Cannot update. Only ${product.stock} units available.`);
         }
       }
+    };
+
+    // Clear all items from cart
+    window.clearCart = () => {
+      if (cart.length === 0) return;
+      if (confirm("Are you sure you want to clear all items from the cart?")) {
+        cart = [];
+        updateCartDisplay();
+        updateOrderSummary();
+      }
+    };
+
+    // Update cart display
+    const updateCartDisplay = () => {
+      if (!cartItems || !emptyCartMessage || !cartSection || !sellBtn) return;
+      
+      cartItems.innerHTML = '';
+      
+      if (cart.length === 0) {
+        emptyCartMessage.classList.remove('hidden');
+        cartSection.classList.add('hidden');
+        safeUpdateElement('cartCount', '0');
+        if (sellBtn) sellBtn.disabled = true;
+        return;
+      }
+      
+      emptyCartMessage.classList.add('hidden');
+      cartSection.classList.remove('hidden');
+      safeUpdateElement('cartCount', cart.length.toString());
+      if (sellBtn) sellBtn.disabled = false;
+      
+      cart.forEach(item => {
+        const cartItem = document.createElement('div');
+        cartItem.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition duration-300';
+        cartItem.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <div class="flex-1">
+              <h4 class="font-medium text-gray-800">${item.name}</h4>
+              <div class="flex items-center space-x-4 mt-1">
+                <div class="flex items-center text-sm">
+                  <i class="fas fa-rupee-sign text-gray-500 mr-1"></i>
+                  <span class="font-semibold">${item.price}</span>
+                </div>
+                <div class="flex items-center text-sm">
+                  <i class="fas fa-boxes text-gray-500 mr-1"></i>
+                  <span>Stock: ${item.stock}</span>
+                </div>
+              </div>
+            </div>
+            <button onclick="removeFromCart('${item.id}')" 
+                    class="text-red-500 hover:text-red-700 ml-2">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+              <button onclick="updateCartQuantity('${item.id}', ${item.quantity - 1})" 
+                      class="bg-gray-200 hover:bg-gray-300 text-gray-800 w-6 h-6 rounded flex items-center justify-center text-xs">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="font-semibold w-8 text-center">${item.quantity}</span>
+              <button onclick="updateCartQuantity('${item.id}', ${item.quantity + 1})" 
+                      class="bg-gray-200 hover:bg-gray-300 text-gray-800 w-6 h-6 rounded flex items-center justify-center text-xs">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            <div class="font-bold text-green-600">
+              ${formatCurrency(item.total)}
+            </div>
+          </div>
+        `;
+        cartItems.appendChild(cartItem);
+      });
+    };
+
+    // Update order summary
+    const updateOrderSummary = () => {
+      if (!cartSummary) return;
+      
+      cartSummary.innerHTML = '';
+      
+      if (cart.length === 0) {
+        safeUpdateElement('totalAmount', '₹0');
+        safeUpdateElement('totalItems', '0');
+        return;
+      }
+      
+      let totalAmount = 0;
+      let totalItems = 0;
+      
+      cart.forEach(item => {
+        totalAmount += item.total;
+        totalItems += item.quantity;
+        
+        const summaryItem = document.createElement('div');
+        summaryItem.className = 'flex justify-between text-sm';
+        summaryItem.innerHTML = `
+          <span class="text-gray-600 truncate max-w-[150px]">${item.name} (${item.quantity} × ₹${item.price})</span>
+          <span class="font-semibold">${formatCurrency(item.total)}</span>
+        `;
+        cartSummary.appendChild(summaryItem);
+      });
+      
+      safeUpdateElement('totalAmount', formatCurrency(totalAmount));
+      safeUpdateElement('totalItems', totalItems.toString());
     };
 
     // ================== SIMPLE PDF EXPORT ==================
@@ -896,7 +1137,10 @@
         });
         
         updateExportProgress(80, "Creating Excel file...");
-        exportToExcel(salesData, "all_sales_anand_electronic");
+        
+        // Use a simpler export function without DOM manipulation
+        exportToExcelSimple(salesData, "all_sales_anand_electronic");
+        
         updateExportProgress(100, "Download complete!");
         
         setTimeout(() => {
@@ -960,7 +1204,7 @@
         });
         
         updateExportProgress(80, "Creating Excel file...");
-        exportToExcel(salesData, `monthly_sales_${currentMonth}_anand_electronic`);
+        exportToExcelSimple(salesData, `monthly_sales_${currentMonth}_anand_electronic`);
         updateExportProgress(100, "Download complete!");
         
         setTimeout(() => {
@@ -974,8 +1218,8 @@
       }
     };
 
-    // Export data to Excel
-    const exportToExcel = (data, filename) => {
+    // Simple export to Excel without DOM manipulation
+    const exportToExcelSimple = (data, filename) => {
       try {
         // Create worksheet
         const ws = XLSX.utils.json_to_sheet(data, {
@@ -1006,25 +1250,12 @@
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sales Data");
         
-        // Add summary sheet
-        const summaryData = [{
-          "Report Type": "Sales Report",
-          "Generated On": new Date().toLocaleString(),
-          "Total Records": data.length - 2, // Subtract summary rows
-          "Total Amount (₹)": data.reduce((sum, row) => sum + (row["Total Amount (₹)"] || 0), 0),
-          "Export Type": filename.includes("monthly") ? "Monthly Sales" : "All Sales"
-        }];
-        
-        const ws2 = XLSX.utils.json_to_sheet(summaryData);
-        XLSX.utils.book_append_sheet(wb, ws2, "Report Summary");
-        
         // Generate and download file
-        XLSX.writeFile(wb, `${filename}_${new Date().toISOString().split('T')[0]}.xlsx`);
+        const fileName = `${filename}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
         
         // Show success message
-        setTimeout(() => {
-          alert(`Excel file "${filename}.xlsx" has been downloaded successfully!`);
-        }, 500);
+        alert(`Excel file "${fileName}" has been downloaded successfully!`);
         
       } catch (error) {
         console.error("Error creating Excel file:", error);
@@ -1032,102 +1263,149 @@
       }
     };
 
-    // Sell function
+    // Sell function for multiple products
     window.sell = async () => {
-      const id = select.value;
-      const q = Number(qtyInput.value);
-      const p = products[id];
-
-      if (!id || !p) {
-        alert("Please select a product");
-        return;
-      }
-
-      if (q <= 0) {
-        alert("Please enter a valid quantity");
-        return;
-      }
-
-      if (q > p.stock) {
-        alert(`Not enough stock! Only ${p.stock} units available.`);
+      if (cart.length === 0) {
+        alert("Please add products to cart before selling");
         return;
       }
 
       // Validate customer info
-      if (!customerNameInput.value.trim()) {
+      if (!customerNameInput || !customerNameInput.value.trim()) {
         alert("Please enter customer name");
-        customerNameInput.focus();
+        if (customerNameInput) customerNameInput.focus();
         return;
       }
 
       // Show loading state
-      sellBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-      sellBtn.disabled = true;
+      if (sellBtn) {
+        sellBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+        sellBtn.disabled = true;
+      }
 
       try {
-        // Update stock
-        await updateDoc(doc(db, "products", id), {
-          stock: p.stock - q
-        });
-
-        // Record sale with customer info
-        const saleData = {
-          product: p.name,
-          qty: q,
-          unitPrice: p.price,
-          total: q * p.price,
-          date: new Date().toISOString().split("T")[0],
-          timestamp: new Date().toISOString(),
-          productId: id,
-          customerName: customerNameInput.value.trim(),
-          mobileNo: mobileNoInput.value.trim(),
-          slipNo: slipNoInput.value.trim(),
-          paymentMode: paymentModeInput.value
-        };
-
-        const saleRef = await addDoc(collection(db, "sales"), saleData);
-
-        // Generate transaction ID
         const transactionId = 'TXN' + Date.now().toString().slice(-8);
+        let totalSaleAmount = 0;
+        let totalItemsSold = 0;
+        
+        // Process each item in cart
+        for (const item of cart) {
+          const product = products[item.id];
+          
+          if (!product) {
+            console.error(`Product ${item.id} not found`);
+            continue;
+          }
+          
+          // Update stock
+          await updateDoc(doc(db, "products", item.id), {
+            stock: product.stock - item.quantity
+          });
+          
+          // Record individual sale
+          const saleData = {
+            product: item.name,
+            qty: item.quantity,
+            unitPrice: item.price,
+            total: item.total,
+            date: new Date().toISOString().split("T")[0],
+            timestamp: new Date().toISOString(),
+            productId: item.id,
+            customerName: customerNameInput.value.trim(),
+            mobileNo: mobileNoInput ? mobileNoInput.value.trim() : '',
+            slipNo: slipNoInput ? slipNoInput.value.trim() : '',
+            paymentMode: paymentModeInput ? paymentModeInput.value : 'Cash',
+            transactionId: transactionId,
+            isMultiProduct: true
+          };
 
+          await addDoc(collection(db, "sales"), saleData);
+          
+          // Update product stock in local data
+          products[item.id].stock -= item.quantity;
+          
+          // Accumulate totals
+          totalSaleAmount += item.total;
+          totalItemsSold += item.quantity;
+        }
+        
         // Update success modal with customer info
-        document.getElementById('saleMessage').textContent = 
-          `Sold ${q} × ${p.name} for ${formatCurrency(saleData.total)}`;
-        document.getElementById('transactionId').textContent = transactionId;
-        document.getElementById('customerNameDisplay').textContent = saleData.customerName;
-        document.getElementById('mobileNoDisplay').textContent = saleData.mobileNo || 'N/A';
-        document.getElementById('slipNoDisplay').textContent = saleData.slipNo || 'N/A';
+        safeUpdateElement('saleMessage', `Sold ${totalItemsSold} items for ${formatCurrency(totalSaleAmount)}`);
+        safeUpdateElement('transactionId', transactionId);
+        safeUpdateElement('customerNameDisplay', customerNameInput.value.trim());
+        safeUpdateElement('mobileNoDisplay', mobileNoInput ? mobileNoInput.value.trim() || 'N/A' : 'N/A');
+        safeUpdateElement('slipNoDisplay', slipNoInput ? slipNoInput.value.trim() || 'N/A' : 'N/A');
+        safeUpdateElement('itemsCount', totalItemsSold.toString());
+        safeUpdateElement('totalAmountDisplay', formatCurrency(totalSaleAmount));
         
         document.getElementById('successModal').classList.remove('hidden');
 
-        // Update UI
-        p.stock -= q;
-        select.onchange(); // Refresh product info
+        // Clear cart and reset UI
+        cart = [];
         
-        // Clear customer info fields (optional)
-        customerNameInput.value = '';
-        mobileNoInput.value = '';
-        slipNoInput.value = '';
-        paymentModeInput.value = 'Cash';
+        // Don't update cart display immediately - wait for DOM to be ready
+        setTimeout(() => {
+          updateCartDisplay();
+          updateOrderSummary();
+        }, 100);
         
-        // Reload recent sales
-        await loadRecentSales();
+        // Clear customer info fields
+        if (customerNameInput) customerNameInput.value = '';
+        if (mobileNoInput) mobileNoInput.value = '';
+        if (slipNoInput) slipNoInput.value = '';
+        if (paymentModeInput) paymentModeInput.value = 'Cash';
+        
+        // Reset product selection
+        if (select) select.value = '';
+        if (productInfoDiv) productInfoDiv.classList.add('hidden');
+        if (quantitySection) quantitySection.classList.add('hidden');
+        
+        // Reload products to update stock
+        await loadProducts();
 
       } catch (error) {
+        console.error("Sale error:", error);
         alert(`Error processing sale: ${error.message}`);
       } finally {
         // Reset button
-        sellBtn.innerHTML = '<i class="fas fa-cash-register mr-2"></i>Complete Sale';
-        sellBtn.disabled = false;
+        if (sellBtn) {
+          sellBtn.innerHTML = '<i class="fas fa-cash-register mr-2"></i>Complete Sale (<span id="cartCount">0</span> items)';
+          sellBtn.disabled = false;
+        }
       }
     };
 
     // Initialize event listeners
-    qtyInput.addEventListener('input', updateSummary);
-    qtyInput.addEventListener('change', updateSummary);
+    const initializeEventListeners = () => {
+      if (select) {
+        select.addEventListener('change', updateProductInfo);
+      }
+      
+      if (qtyInput) {
+        qtyInput.addEventListener('input', () => {
+          // Validate quantity input
+          const productId = select ? select.value : '';
+          if (productId && products[productId]) {
+            const maxQty = products[productId].stock;
+            if (parseInt(qtyInput.value) > maxQty) {
+              qtyInput.value = maxQty;
+            }
+          }
+        });
+      }
+    };
 
     // Initialize page
-    document.addEventListener('DOMContentLoaded', loadProducts);
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize DOM references first
+      initializeDOMElements();
+      
+      // Then initialize event listeners
+      initializeEventListeners();
+      
+      // Then load data
+      loadProducts();
+    });
 
     // Close modals on outside click
     window.onclick = function(event) {
@@ -1141,6 +1419,12 @@
         // Don't close loading modal on outside click
       }
     };
+    
+    // Expose removeFromCart to global scope
+    window.removeFromCart = removeFromCart;
+    
+    // Expose updateCartQuantity to global scope
+    window.updateCartQuantity = updateCartQuantity;
   </script>
 </body>
 </html>
